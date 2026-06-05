@@ -1,121 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PULSE Metronome</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <title>Pulse — Precision Metronome</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="top-bar">
-      <div class="brand">
-        <span class="brand-name">PULSE</span>
-        <span class="brand-tag">Metronome</span>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Precision Metronome</p>
+        <h1>Pulse</h1>
       </div>
-      <nav class="tabs" role="tablist" aria-label="App sections">
-        <button class="tab active" data-tab="metronome" role="tab" aria-selected="true">Metronome</button>
-        <button class="tab" data-tab="practice" role="tab" aria-selected="false">Practice</button>
+      <nav class="tabs" aria-label="App sections">
+        <button class="tab is-active" data-tab="metro" type="button">Metronome</button>
+        <button class="tab" data-tab="practice" type="button">Practice</button>
       </nav>
     </header>
 
-    <main>
-      <section id="metronome" class="section active" role="tabpanel">
-        <div class="layout-grid">
-          <div class="panel large-panel">
-            <div class="meter-card">
-              <div class="meter-ring" id="meterRing">
-                <div class="meter-center" id="meterCenter">
-                  <div class="bpm-value" id="bpmValue">120</div>
-                  <div class="meter-label">BPM</div>
-                </div>
-              </div>
-              <div class="meter-controls">
-                <button class="button secondary" id="tapBpmButton">Tap</button>
-                <div class="input-group">
-                  <label for="bpmInput">BPM</label>
-                  <input id="bpmInput" type="number" min="30" max="250" value="120" inputmode="numeric" />
-                </div>
-              </div>
-            </div>
-          </div>
+    <section id="metroPage" class="page is-active" aria-labelledby="metroTitle">
+      <h2 id="metroTitle" class="sr-only">Metronome</h2>
 
-          <div class="panel small-panel">
-            <div class="control-group">
-              <div class="control-row">
-                <label for="timeSignature">Time signature</label>
-                <select id="timeSignature">
-                  <option value="2">2/4</option>
-                  <option value="3">3/4</option>
-                  <option value="4" selected>4/4</option>
-                  <option value="5">5/4</option>
-                  <option value="6">6/8</option>
-                </select>
-              </div>
-              <div class="control-row">
-                <label for="subdivision">Subdivision</label>
-                <select id="subdivision">
-                  <option value="quarter">Quarter</option>
-                  <option value="eighth" selected>Eighth</option>
-                  <option value="triplet">Triplet</option>
-                  <option value="sixteenth">Sixteenth</option>
-                </select>
-              </div>
-              <div class="control-row volume-row">
-                <label for="volumeControl">Volume</label>
-                <input id="volumeControl" type="range" min="0" max="100" value="85" />
-              </div>
-            </div>
-
-            <div class="accent-panel">
-              <div class="accent-header">
-                <span>Accents</span>
-                <label class="toggle-label">
-                  <input type="checkbox" id="strongFirstBeat" checked />
-                  <span>First beat strong</span>
-                </label>
-              </div>
-              <div id="accentBlocks" class="accent-blocks"></div>
-            </div>
-          </div>
+      <section class="hero-card">
+        <div class="wheel-wrap">
+          <button id="bpmWheel" class="bpm-wheel" type="button" aria-label="Set BPM with dial">
+            <span class="ring ring-outer"></span>
+            <span id="beatPulse" class="ring ring-pulse"></span>
+            <span class="wheel-content">
+              <span id="bpmDisplay" class="bpm-display">120</span>
+              <span class="bpm-label">BPM</span>
+              <span class="drag-hint">drag to change</span>
+            </span>
+          </button>
         </div>
 
-        <div class="action-row">
-          <button class="button primary large" id="startStopButton">Start</button>
-          <div class="status-bar">
-            <span id="beatStatus">Ready</span>
-            <span id="barStatus"></span>
-          </div>
+        <div class="transport-row">
+          <button id="tapButton" class="round-btn secondary" type="button">Tap</button>
+          <button id="startStop" class="play-btn" type="button" aria-label="Start metronome">▶</button>
+          <label class="input-pill bpm-input-pill">
+            <span>BPM</span>
+            <input id="bpmInput" inputmode="numeric" type="number" min="20" max="320" value="120" />
+          </label>
         </div>
       </section>
 
-      <section id="practice" class="section" role="tabpanel" hidden>
-        <div class="practice-card">
-          <div class="practice-row">
-            <div class="practice-input">
-              <label for="practiceX">Play bars</label>
-              <input id="practiceX" type="number" min="1" max="16" value="4" />
-            </div>
-            <div class="practice-input">
-              <label for="practiceY">Mute bars</label>
-              <input id="practiceY" type="number" min="1" max="16" value="4" />
-            </div>
-            <div class="practice-input">
-              <label for="practiceZ">Re-entry bars</label>
-              <input id="practiceZ" type="number" min="1" max="8" value="1" />
-            </div>
+      <section class="settings-grid" aria-label="Metronome settings">
+        <div class="panel compact">
+          <h3>Time Signature</h3>
+          <div class="segmented" id="meterButtons" role="group" aria-label="Time signature">
+            <button data-meter="2/4" type="button">2/4</button>
+            <button data-meter="3/4" type="button">3/4</button>
+            <button data-meter="4/4" class="is-active" type="button">4/4</button>
+            <button data-meter="5/4" type="button">5/4</button>
+            <button data-meter="6/8" type="button">6/8</button>
           </div>
-          <div class="practice-row">
-            <button class="button primary large" id="practiceStartStop">Start Practice</button>
-            <div class="practice-status">
-              <div><span class="status-label">Mode</span><span id="practiceStatus">Ready</span></div>
-              <div><span class="status-label">Cycle</span><span id="practiceCycle">0 / 0</span></div>
-            </div>
+          <label class="toggle-row">
+            <span>Stronger first beat</span>
+            <input id="accentFirst" type="checkbox" checked />
+          </label>
+        </div>
+
+        <div class="panel compact">
+          <h3>Subdivision</h3>
+          <div class="segmented" id="subdivisionButtons" role="group" aria-label="Subdivision">
+            <button data-subdivision="quarter" class="is-active" type="button">Quarter</button>
+            <button data-subdivision="eighth" type="button">Eighth</button>
+            <button data-subdivision="sixteenth" type="button">16th</button>
+            <button data-subdivision="triplet" type="button">Triplet</button>
           </div>
         </div>
+
+        <div class="panel">
+          <div class="panel-title-row">
+            <h3>Accents</h3>
+            <span id="accentMeterLabel" class="muted">4 Beats</span>
+          </div>
+          <div id="accentControls" class="accent-controls" aria-label="Beat accents"></div>
+        </div>
+
+        <div class="panel compact">
+          <h3>Click Volume</h3>
+          <label class="range-row">
+            <span>0</span>
+            <input id="volume" type="range" min="0" max="4" step="0.01" value="1.2" />
+            <span id="volumeValue">120%</span>
+          </label>
+          <p class="helper">High output range for phones and quiet headphones. Lower it if your device distorts.</p>
+        </div>
       </section>
-    </main>
-  </div>
+    </section>
+
+    <section id="practicePage" class="page" aria-labelledby="practiceTitle">
+      <section class="practice-card">
+        <p class="eyebrow">Rhythm Practice</p>
+        <h2 id="practiceTitle">Mute & Re-entry Trainer</h2>
+        <p class="subtle">Timing keeps running internally. Only the click is muted or unmuted by phase.</p>
+
+        <div class="practice-status">
+          <div>
+            <span class="status-label">Status</span>
+            <strong id="practiceStatus">Stopped</strong>
+          </div>
+          <div>
+            <span class="status-label">Bar in cycle</span>
+            <strong id="cycleBar">—</strong>
+          </div>
+        </div>
+
+        <div class="practice-inputs">
+          <label class="number-card">
+            <span>X audible</span>
+            <input id="playBars" type="number" min="1" max="64" value="4" />
+          </label>
+          <label class="number-card">
+            <span>Y muted</span>
+            <input id="muteBars" type="number" min="0" max="64" value="4" />
+          </label>
+          <label class="number-card">
+            <span>Z re-entry</span>
+            <input id="reentryBars" type="number" min="0" max="64" value="1" />
+          </label>
+        </div>
+
+        <button id="practiceStartStop" class="wide-action" type="button">Start Practice</button>
+      </section>
+    </section>
+  </main>
 
   <script src="app.js"></script>
 </body>

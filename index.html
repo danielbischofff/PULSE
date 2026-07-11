@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#050505" />
   <title>Pulse — Precision Metronome</title>
   <link rel="stylesheet" href="styles.css" />
@@ -16,6 +16,7 @@
       </div>
       <nav class="tabs" aria-label="App sections">
         <button class="tab is-active" data-tab="metro" type="button">Metronome</button>
+        <button class="tab" data-tab="setlist" type="button">Setlist</button>
         <button class="tab" data-tab="practice" type="button">Practice</button>
       </nav>
     </header>
@@ -25,15 +26,15 @@
 
       <section class="hero-card">
         <div class="wheel-wrap">
-          <button id="bpmWheel" class="bpm-wheel" type="button" aria-label="Set BPM with dial">
+          <div id="bpmWheel" class="bpm-wheel" role="group" aria-label="Set BPM with dial">
             <span class="ring ring-outer"></span>
             <span id="beatPulse" class="ring ring-pulse"></span>
             <span class="wheel-content">
-              <span id="bpmDisplay" class="bpm-display">120</span>
+              <input id="bpmDisplay" class="bpm-display" inputmode="numeric" type="number" min="20" max="320" value="120" aria-label="BPM" />
               <span class="bpm-label">BPM</span>
               <span class="drag-hint">drag to change</span>
             </span>
-          </button>
+          </div>
         </div>
 
         <div class="transport-row">
@@ -65,10 +66,10 @@
         <div class="panel compact">
           <h3>Subdivision</h3>
           <div class="segmented" id="subdivisionButtons" role="group" aria-label="Subdivision">
-            <button data-subdivision="quarter" class="is-active" type="button">Quarter</button>
-            <button data-subdivision="eighth" type="button">Eighth</button>
-            <button data-subdivision="sixteenth" type="button">16th</button>
-            <button data-subdivision="triplet" type="button">Triplet</button>
+            <button data-subdivision="quarter" class="is-active note-button" type="button" aria-label="Quarter note" title="Quarter note"><span aria-hidden="true">♩</span></button>
+            <button data-subdivision="eighth" class="note-button" type="button" aria-label="Eighth note" title="Eighth note"><span aria-hidden="true">♪</span></button>
+            <button data-subdivision="sixteenth" class="note-button" type="button" aria-label="Sixteenth note" title="Sixteenth note"><span aria-hidden="true">♬</span></button>
+            <button data-subdivision="triplet" class="note-button triplet-note" type="button" aria-label="Eighth-note triplet" title="Eighth-note triplet"><span aria-hidden="true">♪</span><small aria-hidden="true">3</small></button>
           </div>
         </div>
 
@@ -84,11 +85,70 @@
           <h3>Click Volume</h3>
           <label class="range-row">
             <span>0</span>
-            <input id="volume" type="range" min="0" max="4" step="0.01" value="1.2" />
-            <span id="volumeValue">120%</span>
+            <input id="volume" type="range" min="0" max="100" step="1" value="75" />
+            <span id="volumeValue">75%</span>
           </label>
-          <p class="helper">High output range for phones and quiet headphones. Lower it if your device distorts.</p>
+          <p class="helper">Controls the click level from silent to full output.</p>
         </div>
+      </section>
+    </section>
+
+    <section id="setlistPage" class="page" aria-labelledby="setlistTitle">
+      <section class="setlist-card">
+        <div class="panel-title-row">
+          <div>
+            <p class="eyebrow">Saved tempos</p>
+            <h2 id="setlistTitle">Setlists</h2>
+          </div>
+          <button id="addSetlistButton" class="round-btn small-action" type="button">+ Add setlist</button>
+        </div>
+
+        <form id="setlistForm" class="inline-editor" hidden>
+          <label>
+            <span>Setlist name</span>
+            <input id="setlistName" type="text" maxlength="80" placeholder="e.g. Friday Night" required />
+          </label>
+          <div class="editor-actions">
+            <button class="round-btn" type="submit">Create</button>
+            <button id="cancelSetlistButton" class="round-btn secondary" type="button">Cancel</button>
+          </div>
+          <div class="import-divider"><span>or</span></div>
+          <label class="csv-import-label">
+            <span>Import setlist from CSV</span>
+            <input id="setlistCsvInput" type="file" accept=".csv,text/csv" />
+          </label>
+        </form>
+
+        <div id="setlistItems" class="setlist-collections" aria-live="polite"></div>
+
+        <section id="setlistDetail" class="setlist-detail" hidden>
+          <div class="setlist-detail-header">
+            <div>
+              <p class="eyebrow">Selected setlist</p>
+              <h2 id="activeSetlistName"></h2>
+            </div>
+            <div class="setlist-header-actions">
+              <button id="previousSongButton" class="round-btn small-action" type="button" aria-label="Previous song">←</button>
+              <button id="nextSongButton" class="round-btn small-action" type="button" aria-label="Next song">→</button>
+              <button id="exportSetlistButton" class="round-btn small-action secondary" type="button">Export CSV</button>
+              <button id="addSongButton" class="round-btn small-action" type="button">+ Add song</button>
+            </div>
+          </div>
+
+          <form id="songForm" class="song-editor" hidden>
+            <label class="song-name-field"><span>Song name</span><input id="songName" type="text" maxlength="80" placeholder="Song name" required /></label>
+            <label><span>BPM</span><input id="songBpm" type="number" min="20" max="320" value="120" required /></label>
+            <label><span>Time signature</span><select id="songMeter"><option>2/4</option><option>3/4</option><option selected>4/4</option><option>5/4</option><option>6/8</option></select></label>
+            <label><span>Subdivision</span><select id="songSubdivision"><option value="quarter">♩ Quarter note</option><option value="eighth">♪ Eighth note</option><option value="sixteenth">♬ Sixteenth note</option><option value="triplet">♪3 Eighth-note triplet</option></select></label>
+            <div class="editor-actions song-editor-actions">
+              <button id="saveSongButton" class="round-btn" type="submit">Add song</button>
+              <button id="cancelSongButton" class="round-btn secondary" type="button">Cancel</button>
+            </div>
+          </form>
+
+          <p class="helper">Tap a song card to load its settings and start the click.</p>
+          <div id="songItems" class="setlist-items" aria-live="polite"></div>
+        </section>
       </section>
     </section>
 

@@ -366,8 +366,18 @@ h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.13em; colo
   .accent-btn { width: 64px; height: 62px; }
   .inline-editor, .song-editor { grid-template-columns: 1fr; }
   .song-editor-actions { grid-column: auto; }
-  .setlist-detail-header { align-items: start; }
-  .setlist-header-actions { justify-content: flex-start; }
+  .setlist-detail-header { align-items: start; flex-direction: column; gap: 18px; }
+  .setlist-header-actions { width: 100%; justify-content: space-between; gap: 12px; padding: 2px 4px 6px; }
+  .setlist-header-actions .icon-button,
+  #addSetlistButton.icon-button {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    min-height: 42px;
+    padding: 0;
+  }
+  .setlist-header-actions .icon-button svg,
+  #addSetlistButton.icon-button svg { width: 19px; height: 19px; }
   .setlist-item { grid-template-columns: 1fr; }
   .setlist-actions { justify-content: flex-end; }
   .setlist-actions button { flex: 0 0 44px; }

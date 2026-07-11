@@ -31,18 +31,30 @@ input { color: var(--text); }
 [hidden] { display: none !important; }
 
 .app-shell {
+  position: relative;
   width: min(100%, 980px);
   margin: 0 auto;
   padding: max(18px, env(safe-area-inset-top)) 16px 32px;
 }
 
 .topbar {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   margin-bottom: 18px;
+  padding: 0;
+  transition: padding 480ms cubic-bezier(.22,.8,.25,1), background 480ms ease, border-color 480ms ease;
 }
+.topbar h1 { transition: font-size 480ms cubic-bezier(.22,.8,.25,1), line-height 480ms ease, letter-spacing 480ms ease; }
+.topbar.is-scrolled {
+  padding: max(7px, env(safe-area-inset-top)) 8px 7px;
+  margin-inline: -8px;
+  background: rgba(5, 5, 5, 0.92);
+  border-bottom: 1px solid var(--stroke-soft);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.topbar.is-scrolled h1 { font-size: 1.35rem; line-height: 1; letter-spacing: -0.05em; text-transform: uppercase; }
 .eyebrow {
   margin: 0 0 8px;
   color: var(--muted);
@@ -73,6 +85,7 @@ h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.13em; colo
   font-weight: 800;
 }
 .tab.is-active { background: var(--control-active); color: #050505; }
+.page-tabs { position: absolute; top: 34px; right: 16px; }
 
 .page { display: none; }
 .page.is-active { display: block; }
@@ -144,6 +157,25 @@ h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.13em; colo
   font-weight: 800;
 }
 .round-btn { min-height: 56px; padding: 0 18px; }
+.icon-button {
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+}
+.icon-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
 .play-btn {
   width: 78px;
   height: 78px;
@@ -242,7 +274,7 @@ h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.13em; colo
 .setlist-collections { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 18px; }
 .setlist-collection { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--stroke); border-radius: 20px; background: var(--panel-strong); padding: 16px; cursor: pointer; }
 .setlist-collection.is-active { border-color: var(--beat); box-shadow: inset 0 0 0 1px var(--beat); }
-.delete-setlist { border: 0; background: transparent; color: #ff8f8f; font-size: 0.72rem; font-weight: 800; }
+.delete-setlist { border: 0; background: transparent; color: #ff8f8f; }
 .setlist-detail { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--stroke); }
 .setlist-detail-header { display: flex; align-items: end; justify-content: space-between; gap: 14px; }
 .setlist-header-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
@@ -289,10 +321,12 @@ h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.13em; colo
 .setlist-meta { display: block; margin-top: 5px; color: var(--muted); font-size: 0.76rem; }
 .setlist-actions { display: flex; gap: 7px; }
 .setlist-actions button { border: 1px solid var(--stroke); border-radius: 999px; background: var(--control); padding: 9px 12px; font-weight: 800; }
+.setlist-actions .icon-button { width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 0; }
 .setlist-actions .delete-song { color: #ff8f8f; }
 
 .practice-card { padding: clamp(22px, 6vw, 42px); }
-.practice-status { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 22px 0; }
+.practice-dashboard { display: grid; grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.4fr); gap: 12px; margin: 22px 0; }
+.practice-status { display: grid; grid-template-columns: 1fr; gap: 12px; }
 .practice-status > div, .number-card {
   border: 1px solid var(--stroke);
   border-radius: 22px;
@@ -302,6 +336,9 @@ h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.13em; colo
 .status-label, .number-card span { display: block; color: var(--muted); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 9px; }
 .practice-status strong { font-size: clamp(1.4rem, 5vw, 2.4rem); letter-spacing: -0.06em; }
 .practice-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.number-card { display: flex; min-width: 0; flex-direction: column; justify-content: center; transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease; }
+.number-card.is-current { border-color: var(--beat); background: #14221f; box-shadow: inset 0 0 0 1px var(--beat); }
+.number-card.is-current span { color: var(--beat); }
 .number-card input { width: 100%; border: 0; outline: 0; background: transparent; font-size: 2rem; font-weight: 800; }
 .wide-action { width: 100%; margin-top: 16px; min-height: 64px; background: var(--control-active); color: #050505; }
 .wide-action.is-running { background: var(--beat); color: #050505; }
@@ -314,12 +351,16 @@ h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.13em; colo
   .hero-card { padding-bottom: 34px; }
 }
 @media (max-width: 560px) {
-  .topbar { align-items: start; flex-direction: column; }
+  .topbar { margin-bottom: 12px; }
+  .page-tabs { position: static; margin-bottom: 18px; }
   .tabs { width: 100%; }
   .tab { flex: 1; }
   .transport-row { grid-template-columns: 1fr 82px 1fr; }
   .round-btn, .input-pill { min-height: 54px; padding-inline: 12px; }
-  .practice-status, .practice-inputs { grid-template-columns: 1fr; }
+  .practice-dashboard { grid-template-columns: 1fr; }
+  .practice-inputs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .number-card { padding: 12px 9px; }
+  .number-card input { font-size: 1.5rem; }
   .bpm-input-pill span { display: none; }
   .accent-controls { gap: 16px; }
   .accent-btn { width: 64px; height: 62px; }
@@ -328,5 +369,6 @@ h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.13em; colo
   .setlist-detail-header { align-items: start; }
   .setlist-header-actions { justify-content: flex-start; }
   .setlist-item { grid-template-columns: 1fr; }
-  .setlist-actions button { flex: 1; }
+  .setlist-actions { justify-content: flex-end; }
+  .setlist-actions button { flex: 0 0 44px; }
 }

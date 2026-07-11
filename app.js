@@ -35,6 +35,7 @@
   };
 
   const els = {
+    topbar: document.querySelector('.topbar'),
     bpmWheel: document.querySelector('#bpmWheel'),
     bpmDisplay: document.querySelector('#bpmDisplay'),
     bpmInput: document.querySelector('#bpmInput'),
@@ -76,7 +77,8 @@
     reentryBars: document.querySelector('#reentryBars'),
     practiceStartStop: document.querySelector('#practiceStartStop'),
     practiceStatus: document.querySelector('#practiceStatus'),
-    cycleBar: document.querySelector('#cycleBar')
+    cycleBar: document.querySelector('#cycleBar'),
+    practicePhaseCards: document.querySelectorAll('[data-practice-phase]')
   };
 
   function clamp(value, min, max) {
@@ -200,6 +202,9 @@
       if (state.isPractice) {
         els.practiceStatus.textContent = phase.phase;
         els.cycleBar.textContent = `${phase.position} / ${phase.cycle}`;
+        els.practicePhaseCards.forEach(card => {
+          card.classList.toggle('is-current', card.dataset.practicePhase === phase.phase);
+        });
       }
     }, delay);
   }
@@ -224,6 +229,7 @@
     state.scheduleTimer = null;
     els.practiceStatus.textContent = 'Stopped';
     els.cycleBar.textContent = '—';
+    els.practicePhaseCards.forEach(card => card.classList.remove('is-current'));
     updateTransportUI();
   }
 
@@ -320,6 +326,18 @@
   function csvEscape(value) {
     const text = String(value ?? '');
     return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  }
+
+  const actionIcons = {
+    edit: '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20ZM14.5 7.5l3 3" /></svg>',
+    delete: '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5" /></svg>'
+  };
+
+  function setIconButton(button, icon, label) {
+    button.classList.add('icon-button');
+    button.innerHTML = actionIcons[icon];
+    button.setAttribute('aria-label', label);
+    button.title = label;
   }
 
   function activeSetlist() {
@@ -437,7 +455,9 @@
     els.songBpm.value = song?.bpm || state.bpm;
     els.songMeter.value = song?.meter || state.meter.label;
     els.songSubdivision.value = song?.subdivision || state.subdivision;
-    els.saveSongButton.textContent = song ? 'Save changes' : 'Add song';
+    const saveLabel = song ? 'Save changes' : 'Add song';
+    els.saveSongButton.setAttribute('aria-label', saveLabel);
+    els.saveSongButton.title = saveLabel;
     els.songForm.hidden = false;
     els.songName.focus();
   }
@@ -470,7 +490,7 @@
       const remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'delete-setlist';
-      remove.textContent = 'Delete';
+      setIconButton(remove, 'delete', `Delete ${setlist.name}`);
       remove.addEventListener('click', event => {
         event.stopPropagation();
         state.setlists = state.setlists.filter(entry => entry.id !== setlist.id);
@@ -523,12 +543,12 @@
       actions.className = 'setlist-actions';
       const changeButton = document.createElement('button');
       changeButton.type = 'button';
-      changeButton.textContent = 'Change';
+      setIconButton(changeButton, 'edit', `Change ${song.name}`);
       changeButton.addEventListener('click', event => { event.stopPropagation(); openSongEditor(song); });
       const deleteButton = document.createElement('button');
       deleteButton.type = 'button';
       deleteButton.className = 'delete-song';
-      deleteButton.textContent = 'Delete';
+      setIconButton(deleteButton, 'delete', `Delete ${song.name}`);
       deleteButton.addEventListener('click', event => {
         event.stopPropagation();
         selected.songs = selected.songs.filter(entry => entry.id !== song.id);
@@ -647,6 +667,16 @@
   }
 
   function setupEvents() {
+    let scrollFrame = null;
+    window.addEventListener('scroll', () => {
+      if (scrollFrame) return;
+      scrollFrame = window.requestAnimationFrame(() => {
+        const compact = els.topbar.classList.contains('is-scrolled') ? window.scrollY > 8 : window.scrollY > 36;
+        els.topbar.classList.toggle('is-scrolled', compact);
+        scrollFrame = null;
+      });
+    }, { passive: true });
+    els.topbar.classList.toggle('is-scrolled', window.scrollY > 24);
     document.addEventListener('pointerdown', requestWakeLock);
     document.addEventListener('dblclick', event => event.preventDefault(), { passive: false });
     document.addEventListener('gesturestart', event => event.preventDefault(), { passive: false });

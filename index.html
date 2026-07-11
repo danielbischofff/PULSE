@@ -9,17 +9,15 @@
 </head>
 <body>
   <main class="app-shell">
+    <p class="eyebrow app-eyebrow">Precision Metronome</p>
     <header class="topbar">
-      <div>
-        <p class="eyebrow">Precision Metronome</p>
-        <h1>Pulse</h1>
-      </div>
-      <nav class="tabs" aria-label="App sections">
-        <button class="tab is-active" data-tab="metro" type="button">Metronome</button>
-        <button class="tab" data-tab="setlist" type="button">Setlist</button>
-        <button class="tab" data-tab="practice" type="button">Practice</button>
-      </nav>
+      <h1>Pulse</h1>
     </header>
+    <nav class="tabs page-tabs" aria-label="App sections">
+      <button class="tab is-active" data-tab="metro" type="button">Metronome</button>
+      <button class="tab" data-tab="setlist" type="button">Setlist</button>
+      <button class="tab" data-tab="practice" type="button">Practice</button>
+    </nav>
 
     <section id="metroPage" class="page is-active" aria-labelledby="metroTitle">
       <h2 id="metroTitle" class="sr-only">Metronome</h2>
@@ -100,7 +98,7 @@
             <p class="eyebrow">Saved tempos</p>
             <h2 id="setlistTitle">Setlists</h2>
           </div>
-          <button id="addSetlistButton" class="round-btn small-action" type="button">+ Add setlist</button>
+          <button id="addSetlistButton" class="round-btn small-action icon-button" type="button" aria-label="Add setlist" title="Add setlist"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg></button>
         </div>
 
         <form id="setlistForm" class="inline-editor" hidden>
@@ -109,8 +107,8 @@
             <input id="setlistName" type="text" maxlength="80" placeholder="e.g. Friday Night" required />
           </label>
           <div class="editor-actions">
-            <button class="round-btn" type="submit">Create</button>
-            <button id="cancelSetlistButton" class="round-btn secondary" type="button">Cancel</button>
+            <button class="round-btn icon-button" type="submit" aria-label="Create setlist" title="Create setlist"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></svg></button>
+            <button id="cancelSetlistButton" class="round-btn secondary icon-button" type="button" aria-label="Cancel" title="Cancel"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
           </div>
           <div class="import-divider"><span>or</span></div>
           <label class="csv-import-label">
@@ -128,10 +126,10 @@
               <h2 id="activeSetlistName"></h2>
             </div>
             <div class="setlist-header-actions">
-              <button id="previousSongButton" class="round-btn small-action" type="button" aria-label="Previous song">←</button>
-              <button id="nextSongButton" class="round-btn small-action" type="button" aria-label="Next song">→</button>
-              <button id="exportSetlistButton" class="round-btn small-action secondary" type="button">Export CSV</button>
-              <button id="addSongButton" class="round-btn small-action" type="button">+ Add song</button>
+              <button id="previousSongButton" class="round-btn small-action icon-button" type="button" aria-label="Previous song" title="Previous song"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+              <button id="nextSongButton" class="round-btn small-action icon-button" type="button" aria-label="Next song" title="Next song"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+              <button id="exportSetlistButton" class="round-btn small-action secondary icon-button" type="button" aria-label="Export CSV" title="Export CSV"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" /></svg></button>
+              <button id="addSongButton" class="round-btn small-action icon-button" type="button" aria-label="Add song" title="Add song"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg></button>
             </div>
           </div>
 
@@ -141,8 +139,8 @@
             <label><span>Time signature</span><select id="songMeter"><option>2/4</option><option>3/4</option><option selected>4/4</option><option>5/4</option><option>6/8</option></select></label>
             <label><span>Subdivision</span><select id="songSubdivision"><option value="quarter">♩ Quarter note</option><option value="eighth">♪ Eighth note</option><option value="sixteenth">♬ Sixteenth note</option><option value="triplet">♪3 Eighth-note triplet</option></select></label>
             <div class="editor-actions song-editor-actions">
-              <button id="saveSongButton" class="round-btn" type="submit">Add song</button>
-              <button id="cancelSongButton" class="round-btn secondary" type="button">Cancel</button>
+              <button id="saveSongButton" class="round-btn icon-button" type="submit" aria-label="Save song" title="Save song"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></svg></button>
+              <button id="cancelSongButton" class="round-btn secondary icon-button" type="button" aria-label="Cancel" title="Cancel"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
             </div>
           </form>
 
@@ -158,30 +156,32 @@
         <h2 id="practiceTitle">Mute & Re-entry Trainer</h2>
         <p class="subtle">Timing keeps running internally. Only the click is muted or unmuted by phase.</p>
 
-        <div class="practice-status">
-          <div>
-            <span class="status-label">Status</span>
-            <strong id="practiceStatus">Stopped</strong>
+        <div class="practice-dashboard">
+          <div class="practice-status">
+            <div>
+              <span class="status-label">Status</span>
+              <strong id="practiceStatus">Stopped</strong>
+            </div>
+            <div>
+              <span class="status-label">Bar in cycle</span>
+              <strong id="cycleBar">—</strong>
+            </div>
           </div>
-          <div>
-            <span class="status-label">Bar in cycle</span>
-            <strong id="cycleBar">—</strong>
-          </div>
-        </div>
 
-        <div class="practice-inputs">
-          <label class="number-card">
-            <span>X audible</span>
-            <input id="playBars" type="number" min="1" max="64" value="4" />
-          </label>
-          <label class="number-card">
-            <span>Y muted</span>
-            <input id="muteBars" type="number" min="0" max="64" value="4" />
-          </label>
-          <label class="number-card">
-            <span>Z re-entry</span>
-            <input id="reentryBars" type="number" min="0" max="64" value="1" />
-          </label>
+          <div class="practice-inputs">
+            <label class="number-card" data-practice-phase="Playing">
+              <span>X audible</span>
+              <input id="playBars" type="number" min="1" max="64" value="4" />
+            </label>
+            <label class="number-card" data-practice-phase="Muted">
+              <span>Y muted</span>
+              <input id="muteBars" type="number" min="0" max="64" value="4" />
+            </label>
+            <label class="number-card" data-practice-phase="Re-entry">
+              <span>Z re-entry</span>
+              <input id="reentryBars" type="number" min="0" max="64" value="1" />
+            </label>
+          </div>
         </div>
 
         <button id="practiceStartStop" class="wide-action" type="button">Start Practice</button>
